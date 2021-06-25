@@ -1,0 +1,23 @@
+name: "Auto Assign Bugsnag"
+on:
+  issues:
+    types: [labeled]
+jobs:
+  add_assignees:
+    if: ${{ github.event.label.name == 'bugsnag' }}
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/github-script
+      - uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          # https://octokit.github.io/rest.js/v18#issues-add-assignees
+          script: |
+            await github.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                assignees: ['avyavya', 'tmr111116']
+            });
+
+            console.log("Done");
